@@ -1,0 +1,144 @@
+Table Employees {
+  EmployeeID int [pk]
+  FullName varchar
+  JobTitle varchar
+  Salary decimal
+  PhoneNumber varchar
+  HomeAddress text
+  JoiningDate date
+}
+
+Table Departments {
+  DepartmentID int [pk]
+  DepartmentCode varchar [unique]
+  DepartmentName varchar [unique]
+  ChairmanID int
+  SupervisionStartDate date
+}
+
+Table DepartmentLocations {
+  DepartmentID int [pk]
+  LocationName varchar [pk]
+}
+
+Table Doctors {
+  EmployeeID int [pk]
+  Specialty varchar
+  AcademicDegree varchar
+  ScientificArea varchar
+  LicenseNumber varchar [unique]
+  DepartmentID int
+  LocationName varchar
+}
+
+Table Nurses {
+  EmployeeID int [pk]
+  ShiftType varchar
+  DepartmentID int
+  LocationName varchar
+}
+
+Table GeneralStaff {
+  EmployeeID int [pk]
+  DepartmentID int
+  LocationName varchar
+  WorkArea varchar
+}
+
+Table Rooms {
+  RoomNumber int [pk]
+  RoomType varchar
+  DepartmentID int
+  LocationName varchar
+}
+
+Table Patients {
+  PatientID int [pk]
+  NationalID varchar [unique]
+  FullName varchar
+  DateOfBirth date
+  Gender char
+  PhoneNumber varchar
+  HomeAddress text
+  MedicalHistory text
+  AdmissionDate date
+}
+
+Table PatientInvestigations {
+  DoctorID int [pk]
+  PatientID int [pk]
+  WeeklyConsultationHours int
+  InvestigationDate date [pk]
+}
+
+Table Appointments {
+  AppointmentID int [pk]
+  ScheduledDate date
+  ScheduledTime time
+  AppointmentStatus varchar
+  PaymentStatus varchar
+  PatientID int
+  DoctorID int
+}
+
+Table Prescriptions {
+  PrescriptionID int [pk]
+  MedicationName varchar
+  Dosage varchar
+  AdministrationInstructions text
+  StartDate date
+  EndDate date
+  PatientID int
+  DoctorID int
+}
+
+Table MedicalScans {
+  ScanID int [pk]
+  ScanType varchar
+  ScanResult text
+  ScanDate date
+  PatientID int
+  DoctorID int
+}
+
+Table VitalSignsLogs {
+  LogID int [pk]
+  BloodPressure varchar
+  HeartRate int
+  BodyTemperature decimal
+  LogTimestamp datetime
+  PatientID int
+  NurseID int
+}
+
+Table RoomAllocations {
+  AllocationID int [pk]
+  AdmissionTimestamp datetime
+  DischargeTimestamp datetime
+  RoomNumber int
+  PatientID int
+  DoctorID int
+}
+
+Ref: Doctors.EmployeeID - Employees.EmployeeID
+Ref: Nurses.EmployeeID - Employees.EmployeeID
+Ref: GeneralStaff.EmployeeID - Employees.EmployeeID
+Ref: DepartmentLocations.DepartmentID > Departments.DepartmentID
+Ref: Departments.ChairmanID - Doctors.EmployeeID
+Ref: Rooms.(DepartmentID, LocationName) > DepartmentLocations.(DepartmentID, LocationName)
+Ref: Doctors.(DepartmentID, LocationName) > DepartmentLocations.(DepartmentID, LocationName)
+Ref: Nurses.(DepartmentID, LocationName) > DepartmentLocations.(DepartmentID, LocationName)
+Ref: GeneralStaff.(DepartmentID, LocationName) > DepartmentLocations.(DepartmentID, LocationName)
+Ref: PatientInvestigations.DoctorID > Doctors.EmployeeID
+Ref: PatientInvestigations.PatientID > Patients.PatientID
+Ref: Appointments.PatientID > Patients.PatientID
+Ref: Appointments.DoctorID > Doctors.EmployeeID
+Ref: Prescriptions.PatientID > Patients.PatientID
+Ref: Prescriptions.DoctorID > Doctors.EmployeeID
+Ref: MedicalScans.PatientID > Patients.PatientID
+Ref: MedicalScans.DoctorID > Doctors.EmployeeID
+Ref: VitalSignsLogs.PatientID > Patients.PatientID
+Ref: VitalSignsLogs.NurseID > Nurses.EmployeeID
+Ref: RoomAllocations.PatientID > Patients.PatientID
+Ref: RoomAllocations.DoctorID > Doctors.EmployeeID
+Ref: RoomAllocations.RoomNumber > Rooms.RoomNumber
